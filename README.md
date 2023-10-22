@@ -16,17 +16,24 @@ Requisitos Prévios
 Instalação
 -----------
 
+Clonando repositório:
+
+```sh
+git clone https://github.com/alaizepilovski/AKSI-YD.git
+```
+
 Ambiente virtual:
 
 ```sh
 python.exe -m venv env
 python.exe env/Scripts/Activate
 ```
+
 Dependências do projeto:
 
-```sh
+
 python.exe -m pip install -r requiriments.txt
-```
+
 Criar execútável:
 
 ```sh
