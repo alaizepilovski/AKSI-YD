@@ -15,22 +15,32 @@ Requisitos Prévios
 
 Instalação
 -----------
-    - Ambiente virtual
+
+Ambiente virtual:
 
 ```sh
 python.exe -m venv env
 python.exe env/Scripts/Activate
 ```
-    - Dependências do projeto
+Dependências do projeto:
 
 ```sh
 python.exe -m pip install -r requiriments.txt
 ```
-    - Criar execútável
+Criar execútável:
 
 ```sh
 python.exe setup.py
 ```
+
+Execução do app
+-----------
+
+```sh
+python.exe main.py
+```
+ou pelo executável após ser gerado, localizado em 'dist'.
+
 Referências
 -----------
     - Pytube: https://github.com/pytube/pytube
