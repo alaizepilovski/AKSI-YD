@@ -57,7 +57,7 @@ layout = [
     ]
 
 # Cria a janela da aplicação
-window = sg.Window('AKSI Musics and Videos', layout, finalize=True, size=(950,500), icon='static/favicon_g.ico')
+window = sg.Window('AKSI Musics and Videos', layout, finalize=True, size=(950,500), icon='favicons/favicon_g.ico')
 
 while True:
 
