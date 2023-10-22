@@ -2,7 +2,7 @@ import subprocess
 import PySimpleGUI as sg
 from codes import yd, listar_arquivos_em_pasta
 import time
-import os
+import os, sys
 
 # Busca as informações de músicas e vídeos baixadas
 data_musica = listar_arquivos_em_pasta('musicas')
@@ -56,8 +56,16 @@ layout = [
 
     ]
 
+# Verifica se o programa está sendo executado como um executável compilado
+if getattr(sys, 'frozen', False):
+    # Caminho para o ícone quando o programa é um executável
+    icon_path = os.path.join(sys._MEIPASS, 'favicons\\favicon_g.ico')
+else:
+    # Caminho para o ícone quando o programa é um script
+    icon_path = 'favicons\\favicon_g.ico'
+
 # Cria a janela da aplicação
-window = sg.Window('AKSI Musics and Videos', layout, finalize=True, size=(950,500), icon='favicons/favicon_g.ico')
+window = sg.Window('AKSI Musics and Videos', layout, finalize=True, size=(950,500), icon=icon_path)
 
 while True:
 

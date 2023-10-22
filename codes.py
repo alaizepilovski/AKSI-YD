@@ -137,3 +137,4 @@ def listar_arquivos_em_pasta(caminho):
         return arquivos
     else:
         return []
+

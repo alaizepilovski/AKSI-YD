@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 
 pasta_atual = Path('.')
-nome = 'AKSI-YD'
+nome = 'AKSI-YD 1.0'
 
 for pasta in pasta_atual.iterdir():
     busca_env = list(pasta.glob('Scripts'))
