@@ -31,14 +31,15 @@ python.exe env/Scripts/Activate
 
 Dependências do projeto:
 
-
+```sh
 python.exe -m pip install -r requiriments.txt
+```
 
 Criar execútável:
 
 ```sh
 python.exe setup.py
-```
+
 
 Execução do app
 -----------
