@@ -1,15 +1,27 @@
-import subprocess
+from codes import yd, listar_arquivos_em_pasta, models
 import PySimpleGUI as sg
-from codes import yd, listar_arquivos_em_pasta
-import time
+from pathlib import Path
+import subprocess
 import os, sys
+import time
+
+#cria o banco de dados caso não exista
+banco = models()
+banco.valida_db()
 
 # Busca as informações de músicas e vídeos baixadas
-data_musica = listar_arquivos_em_pasta('musicas')
-data_video = listar_arquivos_em_pasta('videos')
+try:
+    pasta_consulta = banco.consultar_pasta()['pasta']
+except KeyError:
+    pasta_consulta = ''
+
+if pasta_consulta:
+    print("existe", pasta_consulta)
+    data_musica = listar_arquivos_em_pasta(os.path.join(pasta_consulta, 'musicas'))
+    data_video = listar_arquivos_em_pasta(os.path.join(pasta_consulta, 'videos'))
 
 # Tema do aplicativo                               
-sg.theme('Default')
+sg.theme('DefaultNoMoreNagging')
 
 # Definir o layout da janela com a tabela, o Column é usado para deixa centralizado o conteúdo
 layout = [
@@ -122,12 +134,12 @@ while True:
 
     # Abre a pasta onde estão salvos os vídeos
     if event == 'Abrir Pasta Videos':
-        caminho_da_pasta = os.path.join(os.getcwd(), 'videos')
+        caminho_da_pasta = os.path.join(pasta_consulta, 'videos')
         subprocess.Popen(['explorer', caminho_da_pasta])
     
     # Abre a pasta onde estão salvas as musicas
     if event == 'Abrir Pasta Músicas':
-        caminho_da_pasta = os.path.join(os.getcwd(), 'musicas')
+        caminho_da_pasta = os.path.join(pasta_consulta, 'musicas')
         subprocess.Popen(['explorer', caminho_da_pasta])
 
 #Finaliza o app

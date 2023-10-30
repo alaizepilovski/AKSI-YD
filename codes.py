@@ -1,6 +1,7 @@
 
 from pytube import YouTube, Playlist
 from pathlib import Path
+import sqlite3
 import time
 import os
 
@@ -11,6 +12,16 @@ class yd:
         self.url = url
 
     def baixar_video(self, window=None, pasta='videos'):
+
+        #cria o banco de dados caso não exista
+        banco = models()
+
+        # Busca as informações de músicas e vídeos baixadas
+        try:
+            consulta = banco.consultar_pasta()['pasta']
+            pasta = os.path.join(consulta, 'videos')
+        except KeyError:
+            pasta = 'videos'
 
         try:
             if self.url:
@@ -72,6 +83,16 @@ class yd:
             window.finalize()
 
     def baixar_musica(self, window=None, pasta='musicas'):
+
+        #cria o banco de dados caso não exista
+        banco = models()
+
+        # Busca as informações de músicas e vídeos baixadas
+        try:
+            consulta = banco.consultar_pasta()['pasta']
+            pasta = os.path.join(consulta, 'musicas')
+        except KeyError:
+            pasta = 'musicas'
 
         try:
             if self.url:
@@ -137,4 +158,65 @@ def listar_arquivos_em_pasta(caminho):
         return arquivos
     else:
         return []
+    
+class models:
 
+    def __init__(self) -> None:
+        # Busca o banco de dados
+        documents_path = Path(os.path.expanduser('~'), 'Documents')
+        self.db_path = Path(documents_path, 'yd.db')
+
+    def valida_db(self):
+        #cria o banco de dados
+        if not self.db_path.exists():
+            conn = sqlite3.connect(self.db_path)
+            
+            try:
+                # Força a criação do arquivo de banco de dados
+                conn.execute(
+                """  
+                CREATE TABLE IF NOT EXISTS config(pasta_padrao VARCHAR);
+                            
+                """)
+                conn.commit()
+            except sqlite3.Error as e:
+                print(f"Erro: {e}")
+            finally:
+                conn.close()
+
+    def atualizar_pasta(self, nome_pasta):
+        conn = sqlite3.connect(self.db_path)
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(
+                """
+                UPDATE config
+                SET pasta_padrao = ?
+                """, (nome_pasta,))
+            conn.commit()
+        except sqlite3.Error as e:
+            print(f"Erro: {e}")
+        finally:
+            conn.close()
+
+    def consultar_pasta(self):
+        conn = sqlite3.connect(self.db_path)
+
+        try:
+            cursor = conn.cursor()
+            
+            dados = cursor.execute(
+                
+                """
+                SELECT * FROM config
+
+                """)
+
+            result = dict(zip(["pasta"], dados.fetchall()[0]))
+
+        except sqlite3.Error as e:
+            print(f"Erro: {e}")
+        finally:
+            conn.close()
+            return result
