@@ -185,20 +185,28 @@ class models:
                 conn.close()
 
     def atualizar_pasta(self, nome_pasta):
-        conn = sqlite3.connect(self.db_path)
 
-        try:
-            cursor = conn.cursor()
-            cursor.execute(
-                """
-                UPDATE config
-                SET pasta_padrao = ?
-                """, (nome_pasta,))
-            conn.commit()
-        except sqlite3.Error as e:
-            print(f"Erro: {e}")
-        finally:
-            conn.close()
+        pasta = Path(nome_pasta)
+
+        if pasta.exists():
+            conn = sqlite3.connect(self.db_path)
+            try:
+                cursor = conn.cursor()
+                cursor.execute(
+                    """
+                    UPDATE config
+                    SET pasta_padrao = ?
+                    """, (nome_pasta,))
+                conn.commit()
+                resultado = True
+            
+            except sqlite3.Error as e:
+                print(f"Erro: {e}")
+                resultado = False
+
+            finally:
+                conn.close()
+                return resultado
 
     def consultar_pasta(self):
         conn = sqlite3.connect(self.db_path)

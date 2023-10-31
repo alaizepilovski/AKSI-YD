@@ -64,7 +64,9 @@ layout = [
               display_row_numbers=False, justification='left', num_rows=5, col_widths=(30, 70), key='TableVideo')],
     
     [sg.Button('Abrir Pasta Videos', size=(15, 1)),
-     sg.Button('Abrir Pasta Músicas', size=(15, 1))]
+     sg.Button('Abrir Pasta Músicas', size=(15, 1)),
+     sg.Text(f'Pasta atual: {pasta_consulta}', size=55),
+     sg.Button('Selecionar pasta de Download', button_color='DimGray')]
 
     ]
 
@@ -98,7 +100,7 @@ while True:
             baixar.baixar_musica(window=window)
 
             # Após o download, atualize os dados da tabela de músicas
-            data_musica = listar_arquivos_em_pasta('musicas')
+            data_musica = listar_arquivos_em_pasta(os.path.join(pasta_consulta, 'musicas'))
             window['TableMusica'].update(data_musica)
             window['-TOTAL_BAIXADO-'].update('')
             window['-MENSAGEM-'].update('Musicas Baixadas!', text_color='green')
@@ -121,7 +123,7 @@ while True:
             baixar.baixar_video(window=window)
 
             # Após o download, atualize os dados da tabela de músicas
-            data_video = listar_arquivos_em_pasta('videos')
+            data_video = listar_arquivos_em_pasta(os.path.join(pasta_consulta, 'videos'))
             window['TableVideo'].update(data_video)
             window['-TOTAL_BAIXADO-'].update('')
             window['-MENSAGEM-'].update('Vídeos Baixados!', text_color='green')
@@ -134,13 +136,35 @@ while True:
 
     # Abre a pasta onde estão salvos os vídeos
     if event == 'Abrir Pasta Videos':
-        caminho_da_pasta = os.path.join(pasta_consulta, 'videos')
+        caminho_da_pasta = os.path.join(pasta_consulta, 'videos').replace("\\", "/").replace("/","\\")
         subprocess.Popen(['explorer', caminho_da_pasta])
     
     # Abre a pasta onde estão salvas as musicas
     if event == 'Abrir Pasta Músicas':
-        caminho_da_pasta = os.path.join(pasta_consulta, 'musicas')
+        caminho_da_pasta = os.path.join(pasta_consulta, 'musicas').replace("\\", "/").replace("/","\\")
         subprocess.Popen(['explorer', caminho_da_pasta])
+
+    #Altera a pasta de download
+    if event == 'Selecionar pasta de Download':
+        text = sg.popup_get_folder('Pasta de Download')
+        resultado_alteracao = banco.atualizar_pasta(nome_pasta=text)
+
+        if resultado_alteracao:
+            # Busca as informações de músicas e vídeos baixadas
+            try:
+                pasta_consulta = banco.consultar_pasta()['pasta']
+            except KeyError:
+                pasta_consulta = ''
+
+            data_musica = listar_arquivos_em_pasta(os.path.join(pasta_consulta, 'musicas'))
+            data_video = listar_arquivos_em_pasta(os.path.join(pasta_consulta, 'videos'))
+            window['TableMusica'].update(data_musica)
+            window['TableVideo'].update(data_video)
+
+            sg.popup('Sucesso', 'A pasta selecionada foi... ', text)
+        else:
+            sg.popup('Falha', 'Pasta Selecionada é inválida')
+
 
 #Finaliza o app
 window.close()
