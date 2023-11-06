@@ -63,6 +63,7 @@ layout = [
     [sg.Table(values=data_video, headings=['Nome', 'Caminho'], auto_size_columns=False,
               display_row_numbers=False, justification='left', num_rows=5, col_widths=(30, 70), key='TableVideo')],
     
+    #Botões
     [sg.Button('Abrir Pasta Videos', size=(15, 1)),
      sg.Button('Abrir Pasta Músicas', size=(15, 1)),
      sg.Text(f'Pasta atual: {pasta_consulta}', size=55),
